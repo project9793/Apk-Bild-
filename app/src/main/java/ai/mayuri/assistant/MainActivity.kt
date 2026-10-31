@@ -3,14 +3,14 @@ package ai.mayuri.assistant
 import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import ai.mayuri.assistant.ui.MainViewModel
 import ai.mayuri.assistant.ui.screens.HomeScreen
 import ai.mayuri.assistant.ui.screens.SettingsScreen
@@ -18,19 +18,20 @@ import ai.mayuri.assistant.ui.screens.SettingsScreen
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val permissionState = rememberMultiplePermissionsState(
-                permissions = listOf(
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.CAMERA
-                )
-            )
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestMultiplePermissions()
+            ) { _ -> }
 
             LaunchedEffect(Unit) {
-                permissionState.launchMultiplePermissionRequest()
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.CAMERA
+                    )
+                )
             }
 
             val navController = rememberNavController()
