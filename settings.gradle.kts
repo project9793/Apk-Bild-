@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MayuriAssistant"
+rootProject.name = "MayuriAI"
 include(":app")
