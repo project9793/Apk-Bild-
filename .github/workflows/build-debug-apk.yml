@@ -194,8 +194,8 @@ jobs:
             cat <<EOF >> "$GITHUB_STEP_SUMMARY"
           ## 🚀 Debug APK Published Successfully
 
-          - **Release Tag:** \`${RELEASE_TAG}\`
-          - **APK Asset Name:** \`${ASSET_NAME}\`
+          - **Release Tag:** "${RELEASE_TAG}"
+          - **APK Asset Name:** "${ASSET_NAME}"
           - **Release Page:** [View Release](${RELEASE_URL})
 
           📱 **Direct Download:** Download \`${ASSET_NAME}\` directly from the **Assets** section of the [GitHub Release Page](${RELEASE_URL}) onto your phone.
