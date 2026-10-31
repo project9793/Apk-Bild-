@@ -1,47 +1,47 @@
 package com.mayuri.ai.data.local
 
-import android.content.Context
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
-/**
- * Lightweight in-memory chat history store.
- *
- * This is intentionally NOT Room yet, so the project builds without KSP.
- * Swap the body for a Room database later without touching callers.
- */
-class MayuriChatDao internal constructor() {
+@Entity(tableName = "chat_messages")
+data class ChatEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val sender: String, // "USER" or "MAYURI"
+    val content: String,
+    val timestamp: Long = System.currentTimeMillis(),
+    val conversationTag: String = "DEFAULT" // Categorizes chats (e.g. "CODE", "VOICE")
+)
 
-    private val _messages = MutableStateFlow<List<ChatEntity>>(emptyList())
-    val messages: StateFlow<List<ChatEntity>> = _messages.asStateFlow()
+@Dao
+interface ChatDao {
+    @Query("SELECT * FROM chat_messages WHERE conversationTag = :tag ORDER BY timestamp ASC")
+    fun getMessages(tag: String = "DEFAULT"): Flow<List<ChatEntity>>
 
-    private var nextId = 1L
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMessage(message: ChatEntity)
 
-    suspend fun insertMessage(message: ChatEntity) {
-        _messages.value = _messages.value + message.copy(id = nextId++)
-    }
-
-    suspend fun getAllMessages(): List<ChatEntity> = _messages.value
-
-    suspend fun clearHistory() {
-        _messages.value = emptyList()
-    }
+    @Query("DELETE FROM chat_messages WHERE conversationTag = :tag")
+    suspend fun clearHistory(tag: String = "DEFAULT")
 }
 
-class MayuriDatabase private constructor() {
-
-    private val dao = MayuriChatDao()
-
-    fun chatDao(): MayuriChatDao = dao
+@Database(entities = [ChatEntity::class], version = 1, exportSchema = false)
+abstract class MayuriDatabase : RoomDatabase() {
+    abstract fun chatDao(): ChatDao
 
     companion object {
         @Volatile
-        private var instance: MayuriDatabase? = null
+        private var INSTANCE: MayuriDatabase? = null
 
-        fun getInstance(context: Context): MayuriDatabase =
-            instance ?: synchronized(this) {
-                instance ?: MayuriDatabase().also { instance = it }
+        fun getInstance(context: android.content.Context): MayuriDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MayuriDatabase::class.java,
+                    "mayuri_db"
+                ).build()
+                INSTANCE = instance
+                instance
             }
+        }
     }
 }
