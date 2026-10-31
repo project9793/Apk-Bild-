@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "ai.mayuri.assistant"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "ai.mayuri.assistant"
