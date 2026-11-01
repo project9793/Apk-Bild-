@@ -17,6 +17,9 @@ interface ChatDao {
     @Query("SELECT * FROM chat_messages WHERE conversationTag = :tag ORDER BY timestamp ASC")
     fun getMessages(tag: String = "DEFAULT"): Flow<List<ChatEntity>>
 
+    @Query("SELECT * FROM chat_messages ORDER BY timestamp ASC")
+    fun getAll(): Flow<List<ChatEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: ChatEntity)
 

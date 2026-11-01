@@ -12,10 +12,13 @@ import com.mayuri.ai.data.local.ChatEntity
 import com.mayuri.ai.data.local.MayuriDatabase
 import com.mayuri.ai.data.local.SecurePreferencesManager
 import com.mayuri.ai.data.repository.AiRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MayuriVoiceViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -105,6 +108,26 @@ class MayuriVoiceViewModel(application: Application) : AndroidViewModel(applicat
 
     suspend fun generateCode(prompt: String, lang: String): Result<String> {
         return aiRepository.generateCode(prompt, lang)
+    }
+
+    // ---- Text chat / history support ----
+
+    fun chatMessages(tag: String = "CHAT"): Flow<List<ChatEntity>> = db.chatDao().getMessages(tag)
+
+    fun allMessages(): Flow<List<ChatEntity>> = db.chatDao().getAll()
+
+    fun speakText(text: String) =
+        voiceManager.speak(text, prefs.getSpeechPitch(), prefs.getSpeechSpeed())
+
+    suspend fun sendChatMessage(userText: String): Result<String> = withContext(Dispatchers.IO) {
+        db.chatDao().insertMessage(ChatEntity(sender = "USER", content = userText, conversationTag = "CHAT"))
+
+        val result = aiRepository.processQuery(userText)
+        val reply = result.getOrNull()?.reply
+            ?: "Maaf kijiye, error aaya: ${result.exceptionOrNull()?.localizedMessage}"
+
+        db.chatDao().insertMessage(ChatEntity(sender = "MAYURI", content = reply, conversationTag = "CHAT"))
+        result.map { it.reply }
     }
 
     override fun onCleared() {

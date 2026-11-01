@@ -71,6 +71,27 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                composable("voice_chat") {
+                    VoiceChatScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("ai_chat") {
+                    AiChatScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable("chat_history") {
+                    ChatHistoryScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
                 composable("code_studio") {
                     CodeStudioScreen(
                         onBack = { navController.popBackStack() },
