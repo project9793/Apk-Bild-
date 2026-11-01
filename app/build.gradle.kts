@@ -10,11 +10,11 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.mayuri.ai"
+        applicationId = "com.mayuri.ai.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
     }
 
     signingConfigs {
@@ -33,6 +33,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Not debuggable: some vendor installers (MIUI, Realme, Vivo)
+            // refuse to install debuggable APKs from a file manager.
+            isDebuggable = false
+        }
         release {
             isMinifyEnabled = false
         }
