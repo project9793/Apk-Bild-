@@ -83,6 +83,9 @@ jobs:
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace --no-daemon
 
+      - name: Build minimal test APK
+        run: gradle :minimal:assembleDebug --stacktrace --no-daemon
+
       - name: Verify APK
         run: |
           EXPECTED_APK="app/build/outputs/apk/debug/app-debug.apk"
@@ -128,6 +131,14 @@ jobs:
           cp "app/build/outputs/apk/debug/app-debug.apk" "$ASSET_PATH"
 
           echo "asset_path=${ASSET_PATH}" >> "$GITHUB_OUTPUT"
+
+          MINIMAL_APK="minimal/build/outputs/apk/debug/minimal-debug.apk"
+          MINIMAL_ASSET="${TEMP_DIR}/mayuri-test-${GITHUB_RUN_NUMBER}.apk"
+          if [ -f "$MINIMAL_APK" ] && [ -s "$MINIMAL_APK" ]; then
+            cp "$MINIMAL_APK" "$MINIMAL_ASSET"
+            echo "minimal_asset=${MINIMAL_ASSET}" >> "$GITHUB_OUTPUT"
+            echo "Test APK prepared: $MINIMAL_ASSET"
+          fi
           echo "asset_name=${ASSET_NAME}" >> "$GITHUB_OUTPUT"
           echo "Release asset prepared: $ASSET_PATH"
 
@@ -167,11 +178,21 @@ jobs:
           EOF
           )
 
-          gh release create "$RELEASE_TAG" "$ASSET_PATH" \
-            --target "$GITHUB_SHA" \
-            --title "$RELEASE_TITLE" \
-            --notes "$NOTES" \
-            --latest
+          EXTRA_ASSET="${{ steps.prep_asset.outputs.minimal_asset }}"
+
+          if [ -n "$EXTRA_ASSET" ] && [ -f "$EXTRA_ASSET" ]; then
+            gh release create "$RELEASE_TAG" "$ASSET_PATH" "$EXTRA_ASSET" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$NOTES" \
+              --latest
+          else
+            gh release create "$RELEASE_TAG" "$ASSET_PATH" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$NOTES" \
+              --latest
+          fi
 
       - name: Report APK download result
         if: always()
