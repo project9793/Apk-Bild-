@@ -122,7 +122,7 @@ fun ApiSettingsScreen(
                 onClick = {
                     prefs.saveGeminiApiKey(geminiKey)
                     prefs.saveOpenAiApiKey(openAiKey)
-                    Toast.makeText(context, "API Keys securely saved in Keystore!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "API keys saved.", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -130,7 +130,7 @@ fun ApiSettingsScreen(
             ) {
                 Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color.Black)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Save & Validate Credentials", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Save Keys", color = Color.Black, fontWeight = FontWeight.Bold)
             }
         }
     }
