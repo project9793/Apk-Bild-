@@ -2,15 +2,14 @@ package com.mayuri.ai.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mayuri.ai.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +26,7 @@ fun SocialAssistantScreen(
                 title = { Text("Social Media Assistant", color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = "Back", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0F081D))
@@ -90,7 +89,7 @@ fun SocialAssistantScreen(
                             }
 
                             IconButton(onClick = { onShare(captionResult, null) }) {
-                                Icon(Icons.Default.Share, contentDescription = "Share", tint = Color.White)
+                                Icon(painterResource(R.drawable.ic_share), contentDescription = "Share", tint = Color.White)
                             }
                         }
                     }

@@ -8,9 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -50,7 +47,7 @@ fun CodeStudioScreen(
                 title = { Text("Code Studio", color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = "Back", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0F081D))
@@ -126,7 +123,7 @@ fun CodeStudioScreen(
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
                 } else {
-                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                    Icon(painterResource(R.drawable.ic_play_arrow), contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Generate Solution")
                 }
