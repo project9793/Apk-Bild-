@@ -50,7 +50,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            NavHost(navController = navController, startDestination = "home") {
+            NavHost(navController = navController, startDestination = "splash") {
+                composable("splash") {
+                    SplashScreen(
+                        onFinished = {
+                            navController.navigate("home") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                        }
+                    )
+                }
+
                 composable("home") {
                     HomeScreen(
                         voiceState = voiceState,

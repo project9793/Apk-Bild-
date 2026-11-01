@@ -17,6 +17,18 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        getByName("debug") {
+            // Stable debug key committed in the repo, so every build can be
+            // installed over the previous one (same signature).
+            storeFile = rootProject.file("keystore/mayuri-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storeType = "PKCS12"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
